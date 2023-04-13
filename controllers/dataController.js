@@ -13,6 +13,7 @@ const getGames = (req, res) => {
             // Events are ordered by start time (live events are first)
             res.json(response.data)
             console.log(response.data)
+            
         
             // Check your usage
             console.log('Remaining requests',response.headers['x-requests-remaining'])
@@ -23,6 +24,7 @@ const getGames = (req, res) => {
             // console.log('Error status', error.response.status)
             // console.log(error.response.data)
             console.log(error)
+            res.status(500).json({message: error.message})
         })
 
 
