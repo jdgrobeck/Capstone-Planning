@@ -28,8 +28,8 @@ app.use('/games', dataRoutes);
 // app.use("/bets", betsRoutes);
 
 app.get('/', (req, res) => {
-  // res.send('Welcome to our server!')
-  res.sendFile(path.join(__dirname, '/public/index.html'))
+  res.send('Welcome to our server!')
+  // res.sendFile(path.join(__dirname, '/public/index.html'))
 })
 
 app.listen(port, () => {
