@@ -1,0 +1,33 @@
+{
+  "name": "capstone-planning",
+  "version": "1.0.0",
+  "description": "1. A package.json file or .txt file with the modules you intend to use (look at Checkpoint 1)     - Use same package.json as Checkpoint 1 2. Use dotenv wiith secrets for your database connection     - Get new JWT_SECRET key from https://passwords-generator.org/ 2. DONE .gitignore file with node_modules and .env 4. Any assets you want to use (images, links, notes on folder structure, auth integration process, external APIs, etc.)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdgrobeck/Capstone-Planning.git"
+  },
+  "author": "Joe Grobeck",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jdgrobeck/Capstone-Planning/issues"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.22"
+  },
+  "homepage": "https://github.com/jdgrobeck/Capstone-Planning#readme",
+  "dependencies": {
+    "argon2": "0.30.3",
+    "axios": "^1.3.5",
+    "cors": "^2.8.5",
+    "dotenv": "16.0.3",
+    "express": "4.18.2",
+    "jsonwebtoken": "9.0.0",
+    "mysql": "^2.18.1"
+  }
+}
