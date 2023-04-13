@@ -11,7 +11,7 @@ const getGames = (req, res) => {
             // response.data.data contains a list of live and 
             //   upcoming events and odds for different bookmakers.
             // Events are ordered by start time (live events are first)
-            res.json((response.data))
+            res.send((response.data))
         
             // Check your usage
             console.log('Remaining requests',response.headers['x-requests-remaining'])
