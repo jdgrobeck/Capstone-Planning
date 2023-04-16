@@ -25,7 +25,7 @@ app.use("/", authRoutes);
 app.use('/users', usersRoutes);
 app.use('/games', dataRoutes);
 
-// app.use("/bets", betsRoutes);
+app.use("/bets", betsRoutes);
 
 app.get('/', (req, res) => {
   res.send('Welcome to our server!')
