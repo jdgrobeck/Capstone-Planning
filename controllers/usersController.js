@@ -6,7 +6,7 @@ let db = require("../utils/db"); //imports connection from datbase
 const getAllUsers = (req, res) => {
   // SELECT ALL USERS
   let sql = 'SELECT * FROM users u ' 
-  sql += 'JOIN bets b ON u.id = b.user_id' 
+  // sql += 'JOIN bets b ON u.id = b.user_id' Not sure if I need this yet
 
   db.query(sql, (err, rows) => {
     if (err) {
@@ -42,16 +42,6 @@ const getUsersById = (req, res) => {
     }
   })
   }
-
-// const createUser = (req, res) => {
-//     // SELECT ALL USERS
-  
-  
-//      // long form
-//     // let sql = 'SELECT * FROM users u JOIN usersAddress ua ON u.id = ua.user_id JOIN usersContact uc ON u.id = uc.user_id';
-  
-    
-//   }
 
 const updateUserById = (req, res) => {
   let id = req.params.id;
@@ -111,7 +101,6 @@ const deleteUserById = (req, res) => {
   module.exports = {
     getAllUsers,
     getUsersById,
-    // createUser,
     updateUserById,
     deleteUserById
   }

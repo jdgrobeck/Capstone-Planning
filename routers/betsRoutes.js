@@ -1,16 +1,20 @@
-// const express = require('express')
-// const betsController = require('../controllers/betsController')
-// const auths = require("../middleware/auths")
-// const router = express.Router()
+//These are still a work in progress. I'm doing an axios.post on the front end that sends different data based on which team the user picks to win. Asking Mayra how to send that data from API to my personal database tomorrow.
 
-// router.get('/', betsController.getAllBets)
 
-// router.get('/:id', betsController.getBetsByUserId)
+const express = require('express')
+const betsController = require('../controllers/betsController')
+const auths = require("../middleware/auths")
+const router = express.Router()
 
-// router.post('/', auths.checkJWT, betsController.createUser)
+router.get('/', betsController.getAllBets)
 
-// router.put('/:id', betsController.updateUserById)
+router.get('/:id', betsController.getBetsByUserId)
 
-// router.delete('/:first_name', betsController.deleteUserByFirstName)
+// router.post('/', auths.checkJWT, betsController.createBet)
+// Don't need this because I'm doing an axios.post when the user makes their pick
 
-// module.exports = router
+router.put('/:id', betsController.updateUserById)
+
+router.delete('/:first_name', betsController.deleteUserByFirstName)
+
+module.exports = router
