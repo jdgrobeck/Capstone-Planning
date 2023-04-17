@@ -13,8 +13,8 @@ router.get('/:id', betsController.getBetsByUserId)
 // router.post('/', auths.checkJWT, betsController.createBet)
 // Don't need this because I'm doing an axios.post when the user makes their pick
 
-router.put('/:id', betsController.updateUserById)
+router.put('/:id', betsController.updateBetById)
 
-router.delete('/:first_name', betsController.deleteUserByFirstName)
+router.delete('/:first_name', betsController.deleteBetById)
 
 module.exports = router
