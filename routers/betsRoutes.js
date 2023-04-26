@@ -15,6 +15,6 @@ router.get('/:id', betsController.getBetsByUserId)
 
 router.put('/:id', betsController.updateBetById)
 
-router.delete('/:first_name', betsController.deleteBetById)
+router.delete('/:id', betsController.deleteBetById)
 
 module.exports = router

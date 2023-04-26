@@ -9,6 +9,7 @@ router.get('/', usersController.getAllUsers)
 router.get('/:id', usersController.getUsersById)
 
 // router.post('/register', auths.checkJWT, usersController.createUser)
+// router.post('/register', usersController.createUser)
 
 // Does this need to be /users/:id?
 router.put('/:id', usersController.updateUserById)

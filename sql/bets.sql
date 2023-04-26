@@ -5,6 +5,6 @@ CREATE TABLE bets (
    user_id varchar(100) not null,
    game_id varchar(50) not null unique,
    commence_time varchar(1000) not null,
-   sport varchar(100) not null.
+   sport varchar(100) not null,
    pick varchar(100) not null
-) 
+) auto_increment = 101
