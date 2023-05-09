@@ -25,29 +25,18 @@ app.use(cors());
 
 //Registration works with and without below code in "Production"
 
+app.options("*", cors());
+
 app.use(function (req, res, next) {
-  // Website you wish to allow to connect
-  // !!THiS IS FOR DEV - We replace this once we have our production URL in place.
- 
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://capstone-planning.vercel.app/" // or whatever port/domain your client is using
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
   );
-
-  // Request methods you wish to allow
-  res.setHeader("Access-Control-Allow-Methods", "*");
-
-  // Request headers you wish to allow
-  res.setHeader(
+  res.header(
     "Access-Control-Allow-Headers",
-    "content-type"
+    "Content-Type, Content-Length, Authorization, Accept, X-Requested-With"
   );
-
-  // Set to true if you need the website to include cookies in the requests sent
-  // to the API (e.g. in case you use sessions)
-  // res.setHeader("Access-Control-Allow-Credentials", true);
-
-  // Pass to next layer of middleware
   next();
 });
 
