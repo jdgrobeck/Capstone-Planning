@@ -138,9 +138,9 @@ let login = (req, res) => {
 
                     let signedToken = jwt.sign(token, process.env.JWT_SECRET);
 
-                    // res.json(signedToken); //crashes after you use this once
-                    res.sendStatus(200);
-                    res.json(token)
+                    res.json(signedToken); //crashes after you use this once
+                    // res.sendStatus(200);
+                    // res.json(token)
 
                     // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsTmFtZSI6Ik1hcnkgRG9lIiwidXNlcklkIjo0LCJpYXQiOjE2ODAxOTExMjh9.HDpiTwojieFJT-XqkSsDeSWD5G_BYAnQvpEEU6_yXbs
                     // res.setHeader("Authorization", "Bearer", signedToken) //Since Postman is fake, we don't have a front-end(client) to send to. Header stuff is client-side.
