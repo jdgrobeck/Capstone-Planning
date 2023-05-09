@@ -64,4 +64,4 @@ let checkJWT = (req, res, next) => {
 
 
 
-module.exports = {login, checkJWT}
+module.exports = {checkJWT}
