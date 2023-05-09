@@ -25,20 +25,20 @@ app.use(cors());
 
 //Registration works with and without below code in "Production"
 
-// app.options("*", cors());
+app.options("*", cors());
 
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header(
-//     "Access-Control-Allow-Methods",
-//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-//   );
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Content-Type, Content-Length, Authorization, Accept, X-Requested-With"
-//   );
-//   next();
-// });
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Content-Length, Authorization, Accept, X-Requested-With"
+  );
+  next();
+});
 
 // app.use(function (req, res, next) {
 //   // Website you wish to allow to connect
@@ -68,7 +68,7 @@ app.use(cors());
 
 app.use("/", authRoutes);
 app.use('/users', usersRoutes);
-app.use('/dashboard', dataRoutes);
+app.use('/games', dataRoutes);
 app.use("/bets", betsRoutes);
 
 

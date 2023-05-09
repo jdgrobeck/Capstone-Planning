@@ -3,7 +3,7 @@ const dataController = require("../controllers/dataController");
 const auths = require("../middleware/auths");
 const router = express.Router();
 
-router.get('/', auths.checkJWT, dataController.getGames);
+router.get('/', dataController.getGames);
 
 
 module.exports = router
