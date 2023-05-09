@@ -35,21 +35,47 @@ app.use(function (req, res, next) {
   );
 
   // Request methods you wish to allow
-  res.setHeader("Access-Control-Allow-Methods", "POST");
+  res.setHeader("Access-Control-Allow-Methods", "*");
 
   // Request headers you wish to allow
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "X-Requested-With,content-type"
+    "content-type"
   );
 
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)
-  res.setHeader("Access-Control-Allow-Credentials", true);
+  // res.setHeader("Access-Control-Allow-Credentials", true);
 
   // Pass to next layer of middleware
   next();
 });
+
+// app.use(function (req, res, next) {
+//   // Website you wish to allow to connect
+//   // !!THiS IS FOR DEV - We replace this once we have our production URL in place.
+ 
+//   res.setHeader(
+//     "Access-Control-Allow-Origin",
+//     "https://capstone-planning.vercel.app/" // or whatever port/domain your client is using
+//   );
+
+//   // Request methods you wish to allow
+//   res.setHeader("Access-Control-Allow-Methods", "POST");
+
+//   // Request headers you wish to allow
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "X-Requested-With,content-type"
+//   );
+
+//   // Set to true if you need the website to include cookies in the requests sent
+//   // to the API (e.g. in case you use sessions)
+//   res.setHeader("Access-Control-Allow-Credentials", true);
+
+//   // Pass to next layer of middleware
+//   next();
+// });
 
 app.use("/", authRoutes);
 app.use('/users', usersRoutes);
