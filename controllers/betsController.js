@@ -43,6 +43,36 @@ const getBetsByUserId = (req, res) => {
     
   }
 
+
+  const createBet = async (req, res) => {
+    // sync use promises (async/await)
+    // FIRST QUERY
+    let userId = req.body.user_id
+    let gameId = req.body.game_id
+    let commenceTime = req.body.commence_time
+    let sport = req.body.sport_title
+    let pick = req.body.pick
+
+    
+    let params = [userId, gameId, commenceTime, sport, pick];
+    let sql = "INSERT INTO bets (user_id, game_id, commence_time, sport, pick) "
+    sql += "VALUES (?, ?, ?, ?, ?)";
+    
+    // let results;
+    
+    try {
+      results = await db.querySync(sql, params);
+    } catch (err) {
+      console.log("INSERT bets query failed", err);
+      res.sendStatus(500);
+      return; // if this query didn't work, stop
+    }
+    
+    
+    // let id = results.insertId;
+    
+    }
+
   const updateBetById = (req, res) => {
     //This is used if a user changes their pick before the game starts. Do I need all this?
     let id = req.params.id;
@@ -105,6 +135,7 @@ const getBetsByUserId = (req, res) => {
   module.exports = {
     getAllBets,
     getBetsByUserId,
+    createBet,
     updateBetById,
     deleteBetById
   }

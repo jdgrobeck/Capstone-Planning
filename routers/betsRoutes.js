@@ -10,7 +10,7 @@ router.get('/', betsController.getAllBets)
 
 router.get('/:id', betsController.getBetsByUserId)
 
-// router.post('/', auths.checkJWT, betsController.createBet)
+router.post('/', betsController.createBet)
 // Don't need this because I'm doing an axios.post when the user makes their pick
 
 router.put('/:id', betsController.updateBetById)
