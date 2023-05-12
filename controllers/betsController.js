@@ -27,9 +27,10 @@ const getBetsByUserId = (req, res) => {
   let params = [id];
 
 
-  let sql = 'SELECT * FROM bets b ' 
-  sql += 'JOIN users u ON b.user_id = u.id ' 
-  sql += ' AND u.id = ?'; // works but BAD! Because they can enter any route. Called a sql injection
+  let sql = 'SELECT * FROM bets ' 
+  sql += 'WHERE user_id = ?' 
+  // sql += 'JOIN users u ON b.user_id = u.id ' 
+  // sql += ' AND u.id = ?'; // works but BAD! Because they can enter any route. Called a sql injection
                           // question mark calls params. Called paramatized statement
                           // Don't bring variables directly into queries from the outside
 
