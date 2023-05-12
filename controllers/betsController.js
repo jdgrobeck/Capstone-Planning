@@ -6,8 +6,9 @@ let db = require("../utils/db");
 
 const getAllBets = (req, res) => {
     // SELECT ALL Bets
-    let sql = 'SELECT * FROM bets ' 
-    sql += 'JOIN users u ON b.user_id = u.id' 
+    let sql = 'SELECT * FROM bets b ' 
+    // Don't need this
+    // sql += 'JOIN users u ON b.user_id = u.id' 
   
     db.query(sql, (err, rows) => {
       if (err) {
@@ -50,13 +51,14 @@ const getBetsByUserId = (req, res) => {
     let userId = req.body.user_id
     let gameId = req.body.game_id
     let commenceTime = req.body.commence_time
-    let sport = req.body.sport_title
+    let sport = req.body.sport
     let pick = req.body.pick
+    let spread = req.body.spread
 
     
-    let params = [userId, gameId, commenceTime, sport, pick];
-    let sql = "INSERT INTO bets (user_id, game_id, commence_time, sport, pick) "
-    sql += "VALUES (?, ?, ?, ?, ?)";
+    let params = [userId, gameId, commenceTime, sport, pick, spread];
+    let sql = "INSERT INTO bets (user_id, game_id, commence_time, sport, pick, spread) "
+    sql += "VALUES (?, ?, ?, ?, ?, ?)";
     
     // let results;
     
