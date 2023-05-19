@@ -52,14 +52,17 @@ const getBetsByUserId = (req, res) => {
     let userId = req.body.user_id
     let gameId = req.body.game_id
     let commenceTime = req.body.commence_time
+    let homeTeam = req.body.home_team
+    let awayTeam = req.body.away_team
     let sport = req.body.sport
     let pick = req.body.pick
     let spread = req.body.spread
 
+    console.log(req.body)
     
-    let params = [userId, gameId, commenceTime, sport, pick, spread];
-    let sql = "INSERT INTO bets (user_id, game_id, commence_time, sport, pick, spread) "
-    sql += "VALUES (?, ?, ?, ?, ?, ?)";
+    let params = [userId, gameId, commenceTime, homeTeam, awayTeam, sport, pick, spread];
+    let sql = "INSERT INTO bets (user_id, game_id, commence_time, home_team, away_team, sport, pick, spread) "
+    sql += "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
     // let results;
     
