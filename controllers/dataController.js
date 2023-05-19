@@ -5,6 +5,7 @@ const axios = require("axios")
 const getGames = (req, res) => {
     const apiKey = process.env.API_KEY
     const basketball = 'https://api.the-odds-api.com/v4/sports/basketball_nba/odds'; 
+    console.log(apiKey)
 
         axios.get(basketball + "?apiKey=" + apiKey + "&regions=us&oddsFormat=american&markets=spreads")
         .then(response => {
