@@ -47,37 +47,42 @@ const getBetsByUserId = (req, res) => {
 
 
   const createBet = async (req, res) => {
-    // sync use promises (async/await)
-    // FIRST QUERY
-    let userId = req.body.user_id
-    let gameId = req.body.game_id
-    let commenceTime = req.body.commence_time
-    let homeTeam = req.body.home_team
-    let awayTeam = req.body.away_team
-    let sport = req.body.sport
-    let pick = req.body.pick
-    let spread = req.body.spread
-
-    console.log(req.body)
-    
-    let params = [userId, gameId, commenceTime, homeTeam, awayTeam, sport, pick, spread];
-    let sql = "INSERT INTO bets (user_id, game_id, commence_time, home_team, away_team, sport, pick, spread) "
-    sql += "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    
-    // let results;
-    
+    const userId = req.body.user_id;
+    const gameId = req.body.game_id;
+    const commenceTime = req.body.commence_time;
+    const homeTeam = req.body.home_team;
+    const awayTeam = req.body.away_team;
+    const sport = req.body.sport;
+    const pick = req.body.pick;
+    const spread = req.body.spread;
+  
     try {
-      results = await db.querySync(sql, params);
+      // Check if the user already has a bet for the game
+      const existingBet = await db.querySync(
+        'SELECT * FROM bets WHERE user_id = ? AND game_id = ?',
+        [userId, gameId]
+      );
+  
+      if (existingBet.length > 0) {
+        // Update the existing bet
+        await db.querySync(
+          'UPDATE bets SET commence_time = ?, home_team = ?, away_team = ?, sport = ?, pick = ?, spread = ? WHERE user_id = ? AND game_id = ?',
+          [commenceTime, homeTeam, awayTeam, sport, pick, spread, userId, gameId]
+        );
+        res.sendStatus(200);
+      } else {
+        // Insert a new bet
+        await db.querySync(
+          'INSERT INTO bets (user_id, game_id, commence_time, home_team, away_team, sport, pick, spread) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          [userId, gameId, commenceTime, homeTeam, awayTeam, sport, pick, spread]
+        );
+        res.sendStatus(201);
+      }
     } catch (err) {
-      console.log("INSERT bets query failed", err);
+      console.log('Error creating/updating bet:', err);
       res.sendStatus(500);
-      return; // if this query didn't work, stop
     }
-    
-    
-    // let id = results.insertId;
-    
-    }
+  };
 
   const updateBetById = (req, res) => {
     //This is used if a user changes their pick before the game starts. Do I need all this?

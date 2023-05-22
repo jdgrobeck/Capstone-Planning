@@ -10,6 +10,6 @@ CREATE TABLE bets (
    sport varchar(100) not null,
    pick varchar(100) not null,
    spread int not null,
-   foreign key (user_id)
-   references users(id)
+   foreign key (user_id) references users(id),
+   unique (user_id, game_id)
 ) auto_increment = 101
