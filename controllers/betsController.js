@@ -135,7 +135,7 @@ const getBetsByUserId = (req, res) => {
         console.log('deleteUserById query failed', err)
 
       } else {
-        return res.json({ message: `Deleted ${rows.affectedRows} user(s)` });
+        return res.json({ message: `Deleted ${rows.affectedRows} bet(s)` });
       }
     })
 
