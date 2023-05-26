@@ -7,7 +7,7 @@ const getGames = (req, res) => {
     const basketball = 'https://api.the-odds-api.com/v4/sports/basketball_nba/odds'; 
     console.log(apiKey)
 
-        axios.get(basketball + "?apiKey=" + apiKey + "&regions=us&oddsFormat=american&markets=spreads")
+        axios.get(basketball + "?apiKey=" + apiKey + "&regions=us&oddsFormat=american&markets=spreads,h2h")
         .then(response => {
             // response.data.data contains a list of live and 
             //   upcoming events and odds for different bookmakers.
