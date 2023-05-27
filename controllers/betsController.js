@@ -47,76 +47,115 @@ const getBetsByUserId = (req, res) => {
 
 
   const createBet = async (req, res) => {
-    const userId = req.body.user_id;
-    const gameId = req.body.game_id;
-    const commenceTime = req.body.commence_time;
-    const homeTeam = req.body.home_team;
-    const awayTeam = req.body.away_team;
-    const sport = req.body.sport;
-    const pick = req.body.pick;
-    const odds = req.body.odds;
-    const spread = req.body.spread;
+  const userId = req.body.user_id;
+  const gameId = req.body.game_id;
+  const commenceTime = req.body.commence_time;
+  const homeTeam = req.body.home_team;
+  const awayTeam = req.body.away_team;
+  const sport = req.body.sport;
+  const pick = req.body.pick;
+  const odds = req.body.odds;
+  const spread = req.body.spread;
+  const result = req.body.result; // Add result to the parameters
   
-    try {
-      // Check if the user already has a bet for the game
-      const existingBet = await db.querySync(
-        'SELECT * FROM bets WHERE user_id = ? AND game_id = ?',
-        [userId, gameId]
-      );
-  
-      if (existingBet.length > 0) {
-        // Update the existing bet
-        await db.querySync(
-          'UPDATE bets SET commence_time = ?, home_team = ?, away_team = ?, sport = ?, pick = ?, odds = ?, spread = ? WHERE user_id = ? AND game_id = ?',
-          [commenceTime, homeTeam, awayTeam, sport, pick, odds, spread, userId, gameId]
-        );
-        res.sendStatus(200);
-      } else {
-        // Insert a new bet
-        await db.querySync(
-          'INSERT INTO bets (user_id, game_id, commence_time, home_team, away_team, sport, pick, odds, spread) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-          [userId, gameId, commenceTime, homeTeam, awayTeam, sport, pick, odds, spread]
-        );
-        res.sendStatus(201);
-      }
-    } catch (err) {
-      console.log('Error creating/updating bet:', err);
-      res.sendStatus(500);
-    }
-  };
+  try {
+    // Check if the user already has a bet for the game
+    const existingBet = await db.querySync(
+      'SELECT * FROM bets WHERE user_id = ? AND game_id = ?',
+      [userId, gameId]
+    );
 
-  const updateBetById = (req, res) => {
-    //This is used if a user changes their pick before the game starts. Do I need all this?
-    let id = req.params.id;
-    let gameId = req.body.game_id;
-    let commence_time = req.body.commence_time;
-    let sport = req.body.sport_key;
-    // let pick = req.body.home_team;
-    // let pick = req.body.away_team;
-    // Will create an if statement that has different conditions if user chooses home or away team
-    let params = [gameId, commence_time, sport, id];
-  
-    //Have to send request in order
-    // Only want to update pick
-    let sql = 'UPDATE bets '
-    sql += 'SET pick = ? where id = ?'
-  
-    if(!id){
+    if (existingBet.length > 0) {
+      // Update the existing bet
+      await db.querySync(
+        'UPDATE bets SET commence_time = ?, home_team = ?, away_team = ?, sport = ?, pick = ?, odds = ?, spread = ?, result = ? WHERE user_id = ? AND game_id = ?',
+        [commenceTime, homeTeam, awayTeam, sport, pick, odds, spread, result, userId, gameId]
+      );
+      res.sendStatus(200);
+    } else {
+      // Insert a new bet
+      await db.querySync(
+        'INSERT INTO bets (user_id, game_id, commence_time, home_team, away_team, sport, pick, odds, spread, result) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [userId, gameId, commenceTime, homeTeam, awayTeam, sport, pick, odds, spread, result]
+      );
+      res.sendStatus(201);
+    }
+  } catch (err) {
+    console.log('Error creating/updating bet:', err);
+    res.sendStatus(500);
+  }
+};
+
+const updateBetById = (req, res) => {
+  const id = req.params.id;
+  const gameId = req.body.game_id;
+  const commenceTime = req.body.commence_time;
+  const homeTeam = req.body.home_team;
+  const awayTeam = req.body.away_team;
+  const sport = req.body.sport;
+  const pick = req.body.pick;
+  const odds = req.body.odds;
+  const spread = req.body.spread;
+  let result = req.body.result;
+
+  // Update the bet record in the database
+  let sql = 'UPDATE bets SET pick = ? WHERE id = ?';
+  let params = [pick, id];
+
+  if (!id) {
+    res.sendStatus(400);
+    return;
+  }
+
+  db.query(sql, params, (err, rows) => {
+    if (err) {
+      console.log('updateBetById query failed', err);
       res.sendStatus(400);
-      return;
+    } else {
+      // If the pick is updated successfully, you can perform the "result" calculation here
+      // Retrieve the scores data from the scores API
+      axios.get('https://capstone-planning.vercel.app/scores')
+        .then(scoresResponse => {
+          const scoresData = scoresResponse.data;
+          // Find the game with the corresponding gameId
+          const game = scoresData.find(score => score.id === gameId);
+
+          if (game && game.scores) {
+            const homeScore = parseInt(game.scores[0].score);
+            const awayScore = parseInt(game.scores[1].score);
+
+            // Perform the result calculation based on the pick and the scores
+            if (
+              (pick === homeTeam && homeScore > awayScore) ||
+              (pick === awayTeam && awayScore > homeScore)
+            ) {
+              result = 'W';
+            } else {
+              result = 'L';
+            }
+          } else {
+            result = 'N/A';
+          }
+
+          // Update the "result" value in the database for the specific bet record
+          sql = 'UPDATE bets SET result = ? WHERE id = ?';
+          params = [result, id];
+
+          db.query(sql, params, (err, rows) => {
+            if (err) {
+              console.log('updateBetResultById query failed', err);
+            }
+            // Send the response indicating success
+            res.sendStatus(200);
+          });
+        })
+        .catch(error => {
+          console.log('Failed to fetch scores data', error);
+          res.sendStatus(500);
+        });
     }
-  
-  
-    db.query(sql, params, (err, rows) => {
-      if (err) {
-        console.log('updateBetById query failed ', err);
-        res.sendStatus(400)
-      } else {
-        res.json(rows);
-      }
-    })
-      
-    }
+  });
+};
 
   const deleteBetById = (req, res) => {
     let id = req.params.id; // path would be /bets/201
