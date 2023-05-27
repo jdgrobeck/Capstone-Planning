@@ -54,6 +54,7 @@ const getBetsByUserId = (req, res) => {
     const awayTeam = req.body.away_team;
     const sport = req.body.sport;
     const pick = req.body.pick;
+    const odds = req.body.odds;
     const spread = req.body.spread;
   
     try {
@@ -66,15 +67,15 @@ const getBetsByUserId = (req, res) => {
       if (existingBet.length > 0) {
         // Update the existing bet
         await db.querySync(
-          'UPDATE bets SET commence_time = ?, home_team = ?, away_team = ?, sport = ?, pick = ?, spread = ? WHERE user_id = ? AND game_id = ?',
-          [commenceTime, homeTeam, awayTeam, sport, pick, spread, userId, gameId]
+          'UPDATE bets SET commence_time = ?, home_team = ?, away_team = ?, sport = ?, pick = ?, odds = ?, spread = ? WHERE user_id = ? AND game_id = ?',
+          [commenceTime, homeTeam, awayTeam, sport, pick, odds, spread, userId, gameId]
         );
         res.sendStatus(200);
       } else {
         // Insert a new bet
         await db.querySync(
-          'INSERT INTO bets (user_id, game_id, commence_time, home_team, away_team, sport, pick, spread) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-          [userId, gameId, commenceTime, homeTeam, awayTeam, sport, pick, spread]
+          'INSERT INTO bets (user_id, game_id, commence_time, home_team, away_team, sport, pick, odds, spread) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          [userId, gameId, commenceTime, homeTeam, awayTeam, sport, pick, odds, spread]
         );
         res.sendStatus(201);
       }
