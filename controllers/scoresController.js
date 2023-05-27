@@ -1,13 +1,12 @@
 const env = require("dotenv")
 const axios = require("axios")
 
-
-const getGames = (req, res) => {
+const getScores = (req, res) => {
     const apiKey = process.env.API_KEY
-    const basketball = 'https://api.the-odds-api.com/v4/sports/basketball_nba/odds'; 
+    const scores = 'https://api.the-odds-api.com/v4/sports/basketball_nba/scores/'; 
     console.log(apiKey)
 
-        axios.get(basketball + "?apiKey=" + apiKey + "&regions=us&oddsFormat=american&markets=spreads,h2h")
+        axios.get(scores + "?daysFrom=3&apiKey=" + apiKey)
         .then(response => {
             // response.data.data contains a list of live and 
             //   upcoming events and odds for different bookmakers.
@@ -31,7 +30,4 @@ const getGames = (req, res) => {
 
     }
 
-
-module.exports = {getGames}
-
-
+    module.exports = {getScores}
