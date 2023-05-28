@@ -2,6 +2,7 @@
 
 const mysql = require('mysql')
 let db = require("../utils/db");
+const axios = require("axios")
 
 
 const getAllBets = (req, res) => {
@@ -86,75 +87,120 @@ const getBetsByUserId = (req, res) => {
   }
 };
 
+//updates pick and result
+// const updateBetById = (req, res) => {
+//   const id = req.params.id;
+//   const gameId = req.body.game_id;
+//   const homeTeam = req.body.home_team;
+//   const awayTeam = req.body.away_team;
+//   const pick = req.body.pick;
+
+//   if (!id) {
+//     res.sendStatus(400);
+//     return;
+//   }
+
+//   // Retrieve the scores data from the scores API
+//   axios.get('https://capstone-planning.vercel.app/scores')
+//     .then(scoresResponse => {
+//       const scoresData = scoresResponse.data;
+//       // Find the game with the corresponding gameId
+//       const game = scoresData.find(score => score.id === gameId);
+
+//       let result;
+//       if (game && game.scores) {
+//         const homeScore = parseInt(game.scores[0].score);
+//         const awayScore = parseInt(game.scores[1].score);
+
+//         // Perform the result calculation based on the pick and the scores
+//         if (
+//           (pick === homeTeam && homeScore > awayScore) ||
+//           (pick === awayTeam && awayScore > homeScore)
+//         ) {
+//           result = 'W';
+//         } else {
+//           result = 'L';
+//         }
+//       } else {
+//         result = 'N/A';
+//       }
+
+//       // Update the "pick" and "result" values in the database for the specific bet record
+//       const sql = 'UPDATE bets SET pick = ?, result = ? WHERE id = ?';
+//       const params = [pick, result, id];
+
+//       db.query(sql, params, (err, rows) => {
+//         if (err) {
+//           console.log('updateBetById query failed', err);
+//           res.sendStatus(400);
+//         } else {
+//           // Send the response indicating success
+//           res.sendStatus(200);
+//         }
+//       });
+//     })
+//     .catch(error => {
+//       console.log('Failed to fetch scores data', error);
+//       res.sendStatus(500);
+//     });
+// };
+
+// Just updates result
+
 const updateBetById = (req, res) => {
   const id = req.params.id;
   const gameId = req.body.game_id;
-  const commenceTime = req.body.commence_time;
   const homeTeam = req.body.home_team;
   const awayTeam = req.body.away_team;
-  const sport = req.body.sport;
-  const pick = req.body.pick;
-  const odds = req.body.odds;
-  const spread = req.body.spread;
-  let result = req.body.result;
-
-  // Update the bet record in the database
-  let sql = 'UPDATE bets SET pick = ? WHERE id = ?';
-  let params = [pick, id];
 
   if (!id) {
     res.sendStatus(400);
     return;
   }
 
-  db.query(sql, params, (err, rows) => {
-    if (err) {
-      console.log('updateBetById query failed', err);
-      res.sendStatus(400);
-    } else {
-      // If the pick is updated successfully, you can perform the "result" calculation here
-      // Retrieve the scores data from the scores API
-      axios.get('https://capstone-planning.vercel.app/scores')
-        .then(scoresResponse => {
-          const scoresData = scoresResponse.data;
-          // Find the game with the corresponding gameId
-          const game = scoresData.find(score => score.id === gameId);
+  // Retrieve the scores data from the scores API
+  axios.get('https://capstone-planning.vercel.app/scores')
+    .then(scoresResponse => {
+      const scoresData = scoresResponse.data;
+      // Find the game with the corresponding gameId
+      const game = scoresData.find(score => score.id === gameId);
 
-          if (game && game.scores) {
-            const homeScore = parseInt(game.scores[0].score);
-            const awayScore = parseInt(game.scores[1].score);
+      let result;
+      if (game && game.scores) {
+        const homeScore = parseInt(game.scores[0].score);
+        const awayScore = parseInt(game.scores[1].score);
 
-            // Perform the result calculation based on the pick and the scores
-            if (
-              (pick === homeTeam && homeScore > awayScore) ||
-              (pick === awayTeam && awayScore > homeScore)
-            ) {
-              result = 'W';
-            } else {
-              result = 'L';
-            }
-          } else {
-            result = 'N/A';
-          }
+        // Perform the result calculation based on the pick and the scores
+        if (
+          (homeTeam && homeScore > awayScore) ||
+          (awayTeam && awayScore > homeScore)
+        ) {
+          result = 'W';
+        } else {
+          result = 'L';
+        }
+      } else {
+        result = 'N/A';
+      }
 
-          // Update the "result" value in the database for the specific bet record
-          sql = 'UPDATE bets SET result = ? WHERE id = ?';
-          params = [result, id];
+      // Update the "result" value in the database for the specific bet record
+      const sql = 'UPDATE bets SET result = ? WHERE id = ?';
+      const params = [result, id];
 
-          db.query(sql, params, (err, rows) => {
-            if (err) {
-              console.log('updateBetResultById query failed', err);
-            }
-            // Send the response indicating success
-            res.sendStatus(200);
-          });
-        })
-        .catch(error => {
-          console.log('Failed to fetch scores data', error);
-          res.sendStatus(500);
-        });
-    }
-  });
+      db.query(sql, params, (err, rows) => {
+        if (err) {
+          console.log('updateBetById query failed', err);
+          res.sendStatus(400);
+        } else {
+          // Send the response indicating success
+          res.sendStatus(200);
+        }
+      });
+    })
+    .catch(error => {
+      console.log('Failed to fetch scores data', error);
+      res.sendStatus(500);
+    });
 };
 
   const deleteBetById = (req, res) => {
