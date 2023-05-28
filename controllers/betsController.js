@@ -87,7 +87,7 @@ const getBetsByUserId = (req, res) => {
   }
 };
 
-//updates pick and result
+// updates pick and result
 // const updateBetById = (req, res) => {
 //   const id = req.params.id;
 //   const gameId = req.body.game_id;
