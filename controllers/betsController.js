@@ -96,94 +96,65 @@ const updateBetById = (req, res) => {
   const pick = req.body.pick;
   const odds = req.body.odds;
   const spread = req.body.spread;
+  let result = req.body.result;
+
+  // Update the bet record in the database
+  let sql = 'UPDATE bets SET pick = ? WHERE id = ?';
+  let params = [pick, id];
 
   if (!id) {
     res.sendStatus(400);
     return;
   }
 
-  // Retrieve the scores data from the scores API
-  axios.get('https://capstone-planning.vercel.app/scores')
-    .then(scoresResponse => {
-      const scoresData = scoresResponse.data;
-      // Find the game with the corresponding gameId
-      const game = scoresData.find(score => score.id === gameId);
+  db.query(sql, params, (err, rows) => {
+    if (err) {
+      console.log('updateBetById query failed', err);
+      res.sendStatus(400);
+    } else {
+      // If the pick is updated successfully, you can perform the "result" calculation here
+      // Retrieve the scores data from the scores API
+      axios.get('https://capstone-planning.vercel.app/scores')
+        .then(scoresResponse => {
+          const scoresData = scoresResponse.data;
+          // Find the game with the corresponding gameId
+          const game = scoresData.find(score => score.id === gameId);
 
-      if (game && game.scores) {
-        const homeScore = parseInt(game.scores[0].score);
-        const awayScore = parseInt(game.scores[1].score);
+          if (game && game.scores) {
+            const homeScore = parseInt(game.scores[0].score);
+            const awayScore = parseInt(game.scores[1].score);
 
-        // Perform the result calculation based on the pick and the scores
-        let result;
-        if (
-          (pick === homeTeam && homeScore > awayScore) ||
-          (pick === awayTeam && awayScore > homeScore)
-        ) {
-          result = 'W';
-        } else {
-          result = 'L';
-        }
-
-        // Update the "result" value in the database for the specific bet record
-        let sql = 'UPDATE bets SET result = ? WHERE id = ?';
-        let params = [result, id];
-
-        db.query(sql, params, (err, rows) => {
-          if (err) {
-            console.log('updateBetResultById query failed', err);
-            res.sendStatus(500);
+            // Perform the result calculation based on the pick and the scores
+            if (
+              (pick === homeTeam && homeScore > awayScore) ||
+              (pick === awayTeam && awayScore > homeScore)
+            ) {
+              result = 'W';
+            } else {
+              result = 'L';
+            }
           } else {
-            // Retrieve the updated bet record from the database
-            sql = 'SELECT * FROM bets WHERE id = ?';
-            params = [id];
-
-            db.query(sql, params, (err, rows) => {
-              if (err) {
-                console.log('fetchBetById query failed', err);
-                res.sendStatus(500);
-              } else {
-                // Send the updated bet record as the response
-                const bet = rows[0];
-                res.json(bet);
-              }
-            });
+            result = 'N/A';
           }
+
+          // Update the "result" value in the database for the specific bet record
+          sql = 'UPDATE bets SET result = ? WHERE id = ?';
+          params = [result, id];
+
+          db.query(sql, params, (err, rows) => {
+            if (err) {
+              console.log('updateBetResultById query failed', err);
+            }
+            // Send the response indicating success
+            res.sendStatus(200);
+          });
+        })
+        .catch(error => {
+          console.log('Failed to fetch scores data', error);
+          res.sendStatus(500);
         });
-      } else {
-        // Handle the case when the game or scores data is missing
-        const result = 'N/A';
-
-        // Update the "result" value in the database for the specific bet record
-        let sql = 'UPDATE bets SET result = ? WHERE id = ?';
-        let params = [result, id];
-
-        db.query(sql, params, (err, rows) => {
-          if (err) {
-            console.log('updateBetResultById query failed', err);
-            res.sendStatus(500);
-          } else {
-            // Retrieve the updated bet record from the database
-            sql = 'SELECT * FROM bets WHERE id = ?';
-            params = [id];
-
-            db.query(sql, params, (err, rows) => {
-              if (err) {
-                console.log('fetchBetById query failed', err);
-                res.sendStatus(500);
-              } else {
-                // Send the updated bet record as the response
-                const bet = rows[0];
-                res.json(bet);
-              }
-            });
-          }
-        });
-      }
-    })
-    .catch(error => {
-      console.log('Failed to fetch scores data', error);
-      res.sendStatus(500);
-    });
+    }
+  });
 };
 
   const deleteBetById = (req, res) => {
