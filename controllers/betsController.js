@@ -166,6 +166,7 @@ const updateBetById = (req, res) => {
       const game = scoresData.find(score => score.id === gameId);
 
       let result;
+      
       if (game && game.scores) {
         const homeScore = parseInt(game.scores[0].score);
         const awayScore = parseInt(game.scores[1].score);
@@ -179,9 +180,7 @@ const updateBetById = (req, res) => {
         } else {
           result = 'L';
         }
-      } else {
-        result = 'N/A';
-      }
+      } 
 
       // Update the "result" value in the database for the specific bet record
       const sql = 'UPDATE bets SET result = ? WHERE id = ?';
