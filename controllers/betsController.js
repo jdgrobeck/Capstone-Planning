@@ -152,6 +152,7 @@ const updateBetById = (req, res) => {
   const gameId = req.body.game_id;
   const homeTeam = req.body.home_team;
   const awayTeam = req.body.away_team;
+  const result = req.body.result
 
   if (!id) {
     res.sendStatus(400);
@@ -165,22 +166,24 @@ const updateBetById = (req, res) => {
       // Find the game with the corresponding gameId
       const game = scoresData.find(score => score.id === gameId);
 
-      let result;
+      if (result === "") {
       
       if (game && game.scores) {
         const homeScore = parseInt(game.scores[0].score);
         const awayScore = parseInt(game.scores[1].score);
 
         // Perform the result calculation based on the pick and the scores
-        if (
-          (homeTeam && homeScore > awayScore) ||
-          (awayTeam && awayScore > homeScore)
-        ) {
+        if (homeTeam && homeScore > awayScore) {
           result = 'W';
-        } else {
+        }
+        else if (awayTeam && awayScore > homeScore) {
+          result = 'W';
+        }
+         else {
           result = 'L';
         }
       } 
+    }
 
       // Update the "result" value in the database for the specific bet record
       const sql = 'UPDATE bets SET result = ? WHERE id = ?';
